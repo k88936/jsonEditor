@@ -6,7 +6,7 @@ and providing functionalities to manipulate QJsonNode objects within the model
 
 from Qt import QtWidgets, QtCore, QtGui
 
-from .qjsonnode import QJsonNode
+from qjsonnode import QJsonNode
 
 
 class QJsonModel(QtCore.QAbstractItemModel):
@@ -196,6 +196,6 @@ class QJsonModel(QtCore.QAbstractItemModel):
         """
         node = self.getNode(index)
         if node == self._rootNode:
-            return node.asDict().values()[0]
+            return list(node.asDict().values())[0]
 
         return node.asDict()

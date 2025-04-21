@@ -16,7 +16,7 @@ import ast
 
 from Qt import QtWidgets, QtCore, QtGui
 
-from .qjsonnode import QJsonNode
+from qjsonnode import QJsonNode
 
 
 class QJsonView(QtWidgets.QTreeView):

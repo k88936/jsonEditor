@@ -64,7 +64,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Copy &gt;</string>
+           <string>Submit &gt;</string>
           </property>
          </widget>
         </item>
@@ -77,7 +77,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt; Copy</string>
+           <string>&lt; Rollback</string>
           </property>
          </widget>
         </item>

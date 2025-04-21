@@ -11,9 +11,9 @@ import sys
 from Qt import QtWidgets, QtCore, QtGui
 from Qt import _loadUi
 
-from jsonViewer.qjsonnode import QJsonNode
-from jsonViewer.qjsonview import QJsonView
-from jsonViewer.qjsonmodel import QJsonModel
+from qjsonnode import QJsonNode
+from qjsonview import QJsonView
+from qjsonmodel import QJsonModel
 from codeEditor.highlighter.jsonHighlight import JsonHighlighter
 
 
@@ -52,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui_grid_layout.addWidget(self.ui_tree_view, 1, 0)
 
         root = QJsonNode.load(TEST_DICT)
+        
         self._model = QJsonModel(root, self)
 
         # proxy model
@@ -66,7 +67,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui_tree_view.setModel(self._proxyModel)
 
         self.ui_filter_edit.textChanged.connect(self._proxyModel.setFilterRegExp)
+        # submit
         self.ui_out_btn.clicked.connect(self.updateBrowser)
+        # rollback
         self.ui_update_btn.clicked.connect(self.updateModel)
 
         # Json Viewer
@@ -90,7 +93,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def pprint(self):
         output = self.ui_tree_view.asDict(self.ui_tree_view.getSelectedIndices())
         jsonDict = json.dumps(output, indent=4, sort_keys=True)
-
         print(jsonDict)
 
 
@@ -99,7 +101,8 @@ def show():
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
     window.show()
-    sys.exit(app.exec_())
+    app.exec_()
+    # sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
