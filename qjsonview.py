@@ -16,7 +16,7 @@ import ast
 
 from Qt import QtWidgets, QtCore, QtGui
 
-from qjsonnode import QJsonNode
+import jsonEditor.qjsonnode
 
 
 class QJsonView(QtWidgets.QTreeView):
@@ -204,7 +204,7 @@ class QJsonView(QtWidgets.QTreeView):
         :param index: QModelIndex. parent index
         """
         # populate items with a temp root
-        root = QJsonNode.load(ast.literal_eval(text))
+        root = jsonEditor.qjsonnode.QJsonNode.load(ast.literal_eval(text))
 
         self.model().sourceModel().addChildren(root.children, index)
         self.model().sort(0, QtCore.Qt.AscendingOrder)

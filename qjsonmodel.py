@@ -6,7 +6,7 @@ and providing functionalities to manipulate QJsonNode objects within the model
 
 from Qt import QtWidgets, QtCore, QtGui
 
-from qjsonnode import QJsonNode
+import jsonEditor.qjsonnode
 
 
 class QJsonModel(QtCore.QAbstractItemModel):
@@ -169,7 +169,7 @@ class QJsonModel(QtCore.QAbstractItemModel):
         Custom: clear the model data
         """
         self.beginResetModel()
-        self._rootNode = QJsonNode()
+        self._rootNode = jsonEditor.qjsonnode.QJsonNode()
         self.endResetModel()
         return True
 
