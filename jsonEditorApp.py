@@ -46,6 +46,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._proxyModel.setFilterKeyColumn(0)
 
         self.ui_tree_view.setModel(self._proxyModel)
+        
         self.ui_tree_view.expandAll()
 
         self.ui_filter_edit.textChanged.connect(self._proxyModel.setFilterRegExp)
@@ -71,12 +72,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def updateBrowser(self):
         self.ui_view_edit.clear()
         output = self.ui_tree_view.asDict(None)
-        jsonDict = json.dumps(output, indent=4, sort_keys=True)
+        jsonDict = json.dumps(output, indent=4, sort_keys=True, ensure_ascii=False)
         self.ui_view_edit.setPlainText(str(jsonDict))
 
     def push(self):
         output = self.ui_tree_view.asDict(None)
-        jsonDict = json.dumps(output, indent=4, sort_keys=True)
+        jsonDict = json.dumps(output, indent=4, sort_keys=True, ensure_ascii=False)
         self.result = jsonDict
         self.app.quit()
         # print(jsonDict)

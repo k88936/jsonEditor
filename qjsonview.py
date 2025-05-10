@@ -11,12 +11,12 @@ https://stackoverflow.com/questions/10778936/qt-mousemoveevent-qtleftbutton
 https://doc.qt.io/qt-5/qmouseevent.html#button
 """
 
-
 import ast
 
 from Qt import QtWidgets, QtCore, QtGui
 
 import jsonEditor.qjsonnode
+from jsonEditor.textEditDialog import TextEditDialog
 
 
 class QJsonView(QtWidgets.QTreeView):
@@ -56,32 +56,34 @@ class QJsonView(QtWidgets.QTreeView):
         contextMenu = QtWidgets.QMenu()
 
         indices = self.getSelectedIndices()
-        # no selection
-        if not indices:
-            addAction = contextMenu.addAction('add entry')
-            addAction.triggered.connect(self.customAdd)
-
-            clearAction = contextMenu.addAction('clear')
-            clearAction.triggered.connect(self.clear)
-        else:
-            removeAction = contextMenu.addAction('remove entry(s)')
-            removeAction.triggered.connect(lambda: self.remove(indices))
-
-            copyAction = contextMenu.addAction('copy entry(s)')
-            copyAction.triggered.connect(self.copy)
+        # # no selection
+        # if not indices:
+        #     addAction = contextMenu.addAction('add entry')
+        #     addAction.triggered.connect(self.custom_add)
+        #
+        #     clearAction = contextMenu.addAction('clear')
+        #     clearAction.triggered.connect(self.clear)
+        # else:
 
         # single selection
         if len(indices) == 1:
             index = indices[0]
 
-            # only allow add when the index is a dictionary or list
-            if index.internalPointer().dtype in [list, dict]:
+            if index.internalPointer().dtype == list:
                 addAction = contextMenu.addAction('add entry')
-                addAction.triggered.connect(lambda: self.customAdd(index=index))
+                addAction.triggered.connect(lambda: self.custom_add(index=index))
 
                 if self._clipBroad:
                     pasteAction = contextMenu.addAction('paste entry(s)')
                     pasteAction.triggered.connect(lambda: self.paste(index))
+            # only allow add when parent node is a list
+            parent = index.parent()
+            if parent.isValid() and parent.internalPointer().dtype == list:
+                removeAction = contextMenu.addAction('remove entry(s)')
+                removeAction.triggered.connect(lambda: self.remove(indices))
+
+                copyAction = contextMenu.addAction('copy entry(s)')
+                copyAction.triggered.connect(self.copy)
 
         contextMenu.exec_(QtGui.QCursor().pos())
 
@@ -228,23 +230,19 @@ class QJsonView(QtWidgets.QTreeView):
 
         :param index: QModelIndex. target index
         """
-        self.customAdd(self._clipBroad, index)
-        self._clipBroad = ''
-        
-    def customAdd(self, text=None, index=QtCore.QModelIndex()):
+        self.custom_add(self._clipBroad, index)
+        # self._clipBroad = ''
+
+    def custom_add(self, text=None, index=QtCore.QModelIndex()):
         """
         Custom: add node(s) under the specified index using specified values
 
         :param text: str. input text for de-serialization
         :param index: QModelIndex. parent index
         """
-        from textEditDialog import TextEditDialog
 
         # test value
         if not text:
-            text = "{'food': 'pizza', 'fruit': {'apple': 20, 'orange': 15}}"
+            text = "{'item': {'name': 'department_name', 'url': 'people_page_url'}}"
 
-        dialog = TextEditDialog(text)
-        if dialog.exec_():
-            text = dialog.getTextEdit()
-            self.add(text, index)
+        self.add(text, index)
