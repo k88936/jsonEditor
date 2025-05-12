@@ -10,6 +10,7 @@ import sys
 
 from Qt import QtWidgets, QtCore, QtGui
 from Qt import _loadUi
+from setuptools.sandbox import pushd
 
 import jsonEditor.qjsonmodel
 import jsonEditor.qjsonnode
@@ -24,6 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.app = app
         super(MainWindow, self).__init__()
         self.result = None
+        self.final= False
         UI_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ui', 'jsonEditor.ui')
         _loadUi(UI_PATH, self)
 
@@ -57,6 +59,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # push 
         self.ui_push_btn.clicked.connect(self.push)
 
+        self.ui_stash_btn.clicked.connect(self.stash)
+
         # Json Viewer
         JsonHighlighter(self.ui_view_edit.document())
         self.updateBrowser()
@@ -68,17 +72,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self._model = jsonEditor.qjsonmodel.QJsonModel(root)
         self._proxyModel.setSourceModel(self._model)
         self.ui_tree_view.expandAll()
+        print(text)
 
     def updateBrowser(self):
         self.ui_view_edit.clear()
         output = self.ui_tree_view.asDict(None)
         jsonDict = json.dumps(output, indent=4, sort_keys=True, ensure_ascii=False)
         self.ui_view_edit.setPlainText(str(jsonDict))
+        print(str(jsonDict))
 
     def push(self):
+        self.stash()
+        self.final = True
+    def stash(self):
+        print(self.result)
         output = self.ui_tree_view.asDict(None)
         jsonDict = json.dumps(output, indent=4, sort_keys=True, ensure_ascii=False)
         self.result = jsonDict
+        self.final = False
         self.app.quit()
         # print(jsonDict)
 
@@ -88,7 +99,7 @@ def edit(origin_json):
     window = MainWindow(app,origin_json)
     window.show()
     app.exec_()
-    return window.result
+    return window.result,window.final
 
 
 if __name__ == '__main__':

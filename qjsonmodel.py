@@ -126,7 +126,7 @@ class QJsonModel(QtCore.QAbstractItemModel):
         currentNode = self.getNode(index)
         parentNode = currentNode.parent
 
-        if parentNode == self._rootNode:
+        if parentNode is None or parentNode == self._rootNode:
             return QtCore.QModelIndex()
 
         return self.createIndex(parentNode.row(), 0, parentNode)
