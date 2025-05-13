@@ -10,7 +10,6 @@ import sys
 
 from Qt import QtWidgets, QtCore, QtGui
 from Qt import _loadUi
-from setuptools.sandbox import pushd
 
 import jsonEditor.qjsonmodel
 import jsonEditor.qjsonnode
